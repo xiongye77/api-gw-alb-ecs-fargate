@@ -1,0 +1,1253 @@
+[ec2-user@ip-192-168-20-103 modules]$ terraform apply
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.api_gateway.aws_acm_certificate.myapp will be created
+  + resource "aws_acm_certificate" "myapp" {
+      + arn                       = (known after apply)
+      + domain_name               = "api.poc.csnglobal.net"
+      + domain_validation_options = [
+          + {
+              + domain_name           = "api.poc.csnglobal.net"
+              + resource_record_name  = (known after apply)
+              + resource_record_type  = (known after apply)
+              + resource_record_value = (known after apply)
+            },
+        ]
+      + id                        = (known after apply)
+      + status                    = (known after apply)
+      + subject_alternative_names = (known after apply)
+      + tags_all                  = (known after apply)
+      + validation_emails         = (known after apply)
+      + validation_method         = "DNS"
+    }
+
+  # module.api_gateway.aws_acm_certificate_validation.cert will be created
+  + resource "aws_acm_certificate_validation" "cert" {
+      + certificate_arn         = (known after apply)
+      + id                      = (known after apply)
+      + validation_record_fqdns = (known after apply)
+    }
+
+  # module.api_gateway.aws_apigatewayv2_api.main will be created
+  + resource "aws_apigatewayv2_api" "main" {
+      + api_endpoint                 = (known after apply)
+      + api_key_selection_expression = "$request.header.x-api-key"
+      + arn                          = (known after apply)
+      + description                  = "Proxy entry point to ALB Backend"
+      + execution_arn                = (known after apply)
+      + id                           = (known after apply)
+      + name                         = "apigw-alb-apigw"
+      + protocol_type                = "HTTP"
+      + route_selection_expression   = "$request.method $request.path"
+      + tags                         = {
+          + "Name"      = "API GW"
+          + "Terraform" = "True"
+        }
+      + tags_all                     = {
+          + "Name"      = "API GW"
+          + "Terraform" = "True"
+        }
+    }
+
+  # module.api_gateway.aws_apigatewayv2_api_mapping.main will be created
+  + resource "aws_apigatewayv2_api_mapping" "main" {
+      + api_id      = (known after apply)
+      + domain_name = (known after apply)
+      + id          = (known after apply)
+      + stage       = (known after apply)
+    }
+
+  # module.api_gateway.aws_apigatewayv2_domain_name.main will be created
+  + resource "aws_apigatewayv2_domain_name" "main" {
+      + api_mapping_selection_expression = (known after apply)
+      + arn                              = (known after apply)
+      + domain_name                      = "api.poc.csnglobal.net"
+      + id                               = (known after apply)
+      + tags_all                         = (known after apply)
+
+      + domain_name_configuration {
+          + certificate_arn    = (known after apply)
+          + endpoint_type      = "REGIONAL"
+          + hosted_zone_id     = (known after apply)
+          + security_policy    = "TLS_1_2"
+          + target_domain_name = (known after apply)
+        }
+    }
+
+  # module.api_gateway.aws_apigatewayv2_integration.main will be created
+  + resource "aws_apigatewayv2_integration" "main" {
+      + api_id                                    = (known after apply)
+      + connection_id                             = (known after apply)
+      + connection_type                           = "VPC_LINK"
+      + id                                        = (known after apply)
+      + integration_method                        = "ANY"
+      + integration_response_selection_expression = (known after apply)
+      + integration_type                          = "HTTP_PROXY"
+      + integration_uri                           = (known after apply)
+      + payload_format_version                    = "1.0"
+      + timeout_milliseconds                      = (known after apply)
+    }
+
+  # module.api_gateway.aws_apigatewayv2_route.main will be created
+  + resource "aws_apigatewayv2_route" "main" {
+      + api_id             = (known after apply)
+      + api_key_required   = false
+      + authorization_type = "NONE"
+      + id                 = (known after apply)
+      + route_key          = "ANY /{proxy+}"
+      + target             = (known after apply)
+    }
+
+  # module.api_gateway.aws_apigatewayv2_stage.main will be created
+  + resource "aws_apigatewayv2_stage" "main" {
+      + api_id        = (known after apply)
+      + arn           = (known after apply)
+      + auto_deploy   = true
+      + deployment_id = (known after apply)
+      + execution_arn = (known after apply)
+      + id            = (known after apply)
+      + invoke_url    = (known after apply)
+      + name          = "$default"
+      + tags_all      = (known after apply)
+
+      + access_log_settings {
+          + destination_arn = (known after apply)
+          + format          = "$context.requestId $context.apiId $context.authorizer.error $context.authorizer.latency $context.authorizer.status $context.domainName $context.error.message $context.httpMethod"
+        }
+    }
+
+  # module.api_gateway.aws_apigatewayv2_vpc_link.main will be created
+  + resource "aws_apigatewayv2_vpc_link" "main" {
+      + arn                = (known after apply)
+      + id                 = (known after apply)
+      + name               = "alb-private-link"
+      + security_group_ids = (known after apply)
+      + subnet_ids         = (known after apply)
+      + tags_all           = (known after apply)
+    }
+
+  # module.api_gateway.aws_cloudwatch_log_group.main will be created
+  + resource "aws_cloudwatch_log_group" "main" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + name              = "apigateway-apigw-logs"
+      + retention_in_days = 0
+      + tags              = {
+          + "Name"      = "API GW"
+          + "Terraform" = "True"
+        }
+      + tags_all          = {
+          + "Name"      = "API GW"
+          + "Terraform" = "True"
+        }
+    }
+
+  # module.api_gateway.aws_route53_record.cert_validation will be created
+  + resource "aws_route53_record" "cert_validation" {
+      + allow_overwrite = true
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = (known after apply)
+      + records         = (known after apply)
+      + ttl             = 60
+      + type            = (known after apply)
+      + zone_id         = "Z01584572MIJQ3CR4KP1B"
+    }
+
+  # module.api_gateway.aws_route53_record.main will be created
+  + resource "aws_route53_record" "main" {
+      + allow_overwrite = (known after apply)
+      + fqdn            = (known after apply)
+      + id              = (known after apply)
+      + name            = "api.poc.csnglobal.net"
+      + records         = (known after apply)
+      + ttl             = 300
+      + type            = "CNAME"
+      + zone_id         = "Z01584572MIJQ3CR4KP1B"
+    }
+
+  # module.ecr.aws_ecr_lifecycle_policy.repo-policy will be created
+  + resource "aws_ecr_lifecycle_policy" "repo-policy" {
+      + id          = (known after apply)
+      + policy      = jsonencode(
+            {
+              + rules = [
+                  + {
+                      + action       = {
+                          + type = "expire"
+                        }
+                      + description  = "Keep image deployed with tag 'latest''"
+                      + rulePriority = 1
+                      + selection    = {
+                          + countNumber   = 1
+                          + countType     = "imageCountMoreThan"
+                          + tagPrefixList = [
+                              + "latest",
+                            ]
+                          + tagStatus     = "tagged"
+                        }
+                    },
+                  + {
+                      + action       = {
+                          + type = "expire"
+                        }
+                      + description  = "Keep last 2 any images"
+                      + rulePriority = 2
+                      + selection    = {
+                          + countNumber = 2
+                          + countType   = "imageCountMoreThan"
+                          + tagStatus   = "any"
+                        }
+                    },
+                ]
+            }
+        )
+      + registry_id = (known after apply)
+      + repository  = "test"
+    }
+
+  # module.ecr.aws_ecr_repository.repo will be created
+  + resource "aws_ecr_repository" "repo" {
+      + arn                  = (known after apply)
+      + id                   = (known after apply)
+      + image_tag_mutability = "MUTABLE"
+      + name                 = "test"
+      + registry_id          = (known after apply)
+      + repository_url       = (known after apply)
+      + tags_all             = (known after apply)
+    }
+
+  # module.ecr.null_resource.push will be created
+  + resource "null_resource" "push" {
+      + id       = (known after apply)
+      + triggers = {
+          + "hash" = "efe4bbd879c4df3c27398ddd2d5a6f9f"
+        }
+    }
+
+  # module.ecs_alb.aws_lb.alb will be created
+  + resource "aws_lb" "alb" {
+      + arn                        = (known after apply)
+      + arn_suffix                 = (known after apply)
+      + desync_mitigation_mode     = "defensive"
+      + dns_name                   = (known after apply)
+      + drop_invalid_header_fields = false
+      + enable_deletion_protection = false
+      + enable_http2               = true
+      + enable_waf_fail_open       = false
+      + id                         = (known after apply)
+      + idle_timeout               = 60
+      + internal                   = true
+      + ip_address_type            = (known after apply)
+      + load_balancer_type         = "application"
+      + name                       = "alb-alb-apigw-alb-apigw"
+      + security_groups            = (known after apply)
+      + subnets                    = (known after apply)
+      + tags                       = {
+          + "Name"      = "ALB for ECS"
+          + "Terraform" = "True"
+        }
+      + tags_all                   = {
+          + "Name"      = "ALB for ECS"
+          + "Terraform" = "True"
+        }
+      + vpc_id                     = (known after apply)
+      + zone_id                    = (known after apply)
+
+      + subnet_mapping {
+          + allocation_id        = (known after apply)
+          + ipv6_address         = (known after apply)
+          + outpost_id           = (known after apply)
+          + private_ipv4_address = (known after apply)
+          + subnet_id            = (known after apply)
+        }
+    }
+
+  # module.ecs_alb.aws_lb_listener.alb_listener will be created
+  + resource "aws_lb_listener" "alb_listener" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + load_balancer_arn = (known after apply)
+      + port              = 80
+      + protocol          = "HTTP"
+      + ssl_policy        = (known after apply)
+      + tags_all          = (known after apply)
+
+      + default_action {
+          + order = (known after apply)
+          + type  = "fixed-response"
+
+          + fixed_response {
+              + content_type = "application/json"
+              + message_body = "No path to route"
+              + status_code  = "404"
+            }
+        }
+    }
+
+  # module.ecs_cluster.aws_ecs_cluster.main will be created
+  + resource "aws_ecs_cluster" "main" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + name     = "helloworld-alb-apigw"
+      + tags     = {
+          + "Name"      = "ECS cluster"
+          + "Terraform" = "True"
+        }
+      + tags_all = {
+          + "Name"      = "ECS cluster"
+          + "Terraform" = "True"
+        }
+
+      + setting {
+          + name  = (known after apply)
+          + value = (known after apply)
+        }
+    }
+
+  # module.ecs_microservice.data.aws_ecs_task_definition.app will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_ecs_task_definition" "app"  {
+      + family          = (known after apply)
+      + id              = (known after apply)
+      + network_mode    = (known after apply)
+      + revision        = (known after apply)
+      + status          = (known after apply)
+      + task_definition = "carsales1-alb-apigw"
+      + task_role_arn   = (known after apply)
+    }
+
+  # module.ecs_microservice.aws_appautoscaling_policy.down will be created
+  + resource "aws_appautoscaling_policy" "down" {
+      + arn                = (known after apply)
+      + id                 = (known after apply)
+      + name               = "cb_scale_down-carsales1-alb-apigw"
+      + policy_type        = "StepScaling"
+      + resource_id        = "service/helloworld-alb-apigw/carsales1-alb-apigw"
+      + scalable_dimension = "ecs:service:DesiredCount"
+      + service_namespace  = "ecs"
+
+      + step_scaling_policy_configuration {
+          + adjustment_type         = "ChangeInCapacity"
+          + cooldown                = 60
+          + metric_aggregation_type = "Maximum"
+
+          + step_adjustment {
+              + metric_interval_lower_bound = "0"
+              + scaling_adjustment          = -1
+            }
+        }
+    }
+
+  # module.ecs_microservice.aws_appautoscaling_policy.up will be created
+  + resource "aws_appautoscaling_policy" "up" {
+      + arn                = (known after apply)
+      + id                 = (known after apply)
+      + name               = "cw_scale_up-carsales1-alb-apigw"
+      + policy_type        = "StepScaling"
+      + resource_id        = "service/helloworld-alb-apigw/carsales1-alb-apigw"
+      + scalable_dimension = "ecs:service:DesiredCount"
+      + service_namespace  = "ecs"
+
+      + step_scaling_policy_configuration {
+          + adjustment_type         = "ChangeInCapacity"
+          + cooldown                = 60
+          + metric_aggregation_type = "Maximum"
+
+          + step_adjustment {
+              + metric_interval_lower_bound = "0"
+              + scaling_adjustment          = 1
+            }
+        }
+    }
+
+  # module.ecs_microservice.aws_appautoscaling_target.target will be created
+  + resource "aws_appautoscaling_target" "target" {
+      + id                 = (known after apply)
+      + max_capacity       = 3
+      + min_capacity       = 1
+      + resource_id        = "service/helloworld-alb-apigw/carsales1-alb-apigw"
+      + role_arn           = (known after apply)
+      + scalable_dimension = "ecs:service:DesiredCount"
+      + service_namespace  = "ecs"
+    }
+
+  # module.ecs_microservice.aws_cloudwatch_log_group.cw_log_group will be created
+  + resource "aws_cloudwatch_log_group" "cw_log_group" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + name              = "/ecs/carsales1-alb-apigw"
+      + retention_in_days = 30
+      + tags              = {
+          + "Name"      = "ECS Microservice"
+          + "Terraform" = "True"
+        }
+      + tags_all          = {
+          + "Name"      = "ECS Microservice"
+          + "Terraform" = "True"
+        }
+    }
+
+  # module.ecs_microservice.aws_cloudwatch_log_stream.cw_log_stream will be created
+  + resource "aws_cloudwatch_log_stream" "cw_log_stream" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + log_group_name = "/ecs/carsales1-alb-apigw"
+      + name           = "carsales1-alb-apigw"
+    }
+
+  # module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_high will be created
+  + resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
+      + actions_enabled                       = true
+      + alarm_actions                         = (known after apply)
+      + alarm_name                            = "cw_cpu_utilization_high-carsales1-alb-apigw"
+      + arn                                   = (known after apply)
+      + comparison_operator                   = "GreaterThanOrEqualToThreshold"
+      + dimensions                            = {
+          + "ClusterName" = "helloworld-alb-apigw"
+          + "ServiceName" = "carsales1-alb-apigw"
+        }
+      + evaluate_low_sample_count_percentiles = (known after apply)
+      + evaluation_periods                    = 2
+      + id                                    = (known after apply)
+      + metric_name                           = "CPUUtilization"
+      + namespace                             = "AWS/ECS"
+      + period                                = 60
+      + statistic                             = "Average"
+      + tags_all                              = (known after apply)
+      + threshold                             = 85
+      + treat_missing_data                    = "missing"
+    }
+
+  # module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_low will be created
+  + resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
+      + actions_enabled                       = true
+      + alarm_actions                         = (known after apply)
+      + alarm_name                            = "cb_cpu_utilization_low-carsales1-alb-apigw"
+      + arn                                   = (known after apply)
+      + comparison_operator                   = "LessThanOrEqualToThreshold"
+      + dimensions                            = {
+          + "ClusterName" = "helloworld-alb-apigw"
+          + "ServiceName" = "carsales1-alb-apigw"
+        }
+      + evaluate_low_sample_count_percentiles = (known after apply)
+      + evaluation_periods                    = 2
+      + id                                    = (known after apply)
+      + metric_name                           = "CPUUtilization"
+      + namespace                             = "AWS/ECS"
+      + period                                = 60
+      + statistic                             = "Average"
+      + tags_all                              = (known after apply)
+      + threshold                             = 10
+      + treat_missing_data                    = "missing"
+    }
+
+  # module.ecs_microservice.aws_ecs_service.main will be created
+  + resource "aws_ecs_service" "main" {
+      + cluster                            = "helloworld-alb-apigw"
+      + deployment_maximum_percent         = 200
+      + deployment_minimum_healthy_percent = 100
+      + desired_count                      = 1
+      + enable_ecs_managed_tags            = false
+      + enable_execute_command             = false
+      + iam_role                           = (known after apply)
+      + id                                 = (known after apply)
+      + launch_type                        = "FARGATE"
+      + name                               = "carsales1-alb-apigw"
+      + platform_version                   = (known after apply)
+      + scheduling_strategy                = "REPLICA"
+      + tags_all                           = (known after apply)
+      + task_definition                    = (known after apply)
+      + wait_for_steady_state              = false
+
+      + load_balancer {
+          + container_name   = "carsales1"
+          + container_port   = 80
+          + target_group_arn = (known after apply)
+        }
+
+      + network_configuration {
+          + assign_public_ip = false
+          + security_groups  = (known after apply)
+          + subnets          = (known after apply)
+        }
+    }
+
+  # module.ecs_microservice.aws_ecs_task_definition.app will be created
+  + resource "aws_ecs_task_definition" "app" {
+      + arn                      = (known after apply)
+      + container_definitions    = (known after apply)
+      + cpu                      = "1024"
+      + execution_role_arn       = (known after apply)
+      + family                   = "carsales1-alb-apigw"
+      + id                       = (known after apply)
+      + memory                   = "2048"
+      + network_mode             = "awsvpc"
+      + requires_compatibilities = [
+          + "FARGATE",
+        ]
+      + revision                 = (known after apply)
+      + tags                     = {
+          + "Name"      = "ECS Microservice"
+          + "Terraform" = "True"
+        }
+      + tags_all                 = {
+          + "Name"      = "ECS Microservice"
+          + "Terraform" = "True"
+        }
+      + task_role_arn            = (known after apply)
+    }
+
+  # module.ecs_microservice.aws_iam_role.main_ecs_tasks will be created
+  + resource "aws_iam_role" "main_ecs_tasks" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ecs-tasks.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "main_ecs_tasks-carsales1-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = (known after apply)
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = (known after apply)
+          + policy = (known after apply)
+        }
+    }
+
+  # module.ecs_microservice.aws_iam_role.task_role will be created
+  + resource "aws_iam_role" "task_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ecs-tasks.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "ecs_tasks-carsales1-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = (known after apply)
+      + unique_id             = (known after apply)
+
+      + inline_policy {
+          + name   = (known after apply)
+          + policy = (known after apply)
+        }
+    }
+
+  # module.ecs_microservice.aws_iam_role_policy.main_ecs_tasks will be created
+  + resource "aws_iam_role_policy" "main_ecs_tasks" {
+      + id     = (known after apply)
+      + name   = "main_ecs_tasks-carsales1-policy"
+      + policy = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action   = [
+                          + "s3:Get*",
+                          + "s3:List*",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "ecr:GetAuthorizationToken",
+                          + "ecr:BatchCheckLayerAvailability",
+                          + "ecr:GetDownloadUrlForLayer",
+                          + "ecr:BatchGetImage",
+                          + "logs:CreateLogStream",
+                          + "logs:PutLogEvents",
+                          + "logs:CreateLogGroup",
+                          + "logs:DescribeLogStreams",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "*",
+                        ]
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + role   = (known after apply)
+    }
+
+  # module.ecs_microservice.aws_lb_listener_rule.static will be created
+  + resource "aws_lb_listener_rule" "static" {
+      + arn          = (known after apply)
+      + id           = (known after apply)
+      + listener_arn = (known after apply)
+      + priority     = 100
+      + tags_all     = (known after apply)
+
+      + action {
+          + order            = (known after apply)
+          + target_group_arn = (known after apply)
+          + type             = "forward"
+        }
+
+      + condition {
+
+          + path_pattern {
+              + values = [
+                  + "/test1/",
+                ]
+            }
+        }
+    }
+
+  # module.ecs_microservice.aws_lb_target_group.alb_tg will be created
+  + resource "aws_lb_target_group" "alb_tg" {
+      + arn                                = (known after apply)
+      + arn_suffix                         = (known after apply)
+      + connection_termination             = false
+      + deregistration_delay               = "300"
+      + id                                 = (known after apply)
+      + lambda_multi_value_headers_enabled = false
+      + load_balancing_algorithm_type      = (known after apply)
+      + name                               = "carsales1-tg"
+      + port                               = 80
+      + preserve_client_ip                 = (known after apply)
+      + protocol                           = "HTTP"
+      + protocol_version                   = (known after apply)
+      + proxy_protocol_v2                  = false
+      + slow_start                         = 0
+      + tags_all                           = (known after apply)
+      + target_type                        = "ip"
+      + vpc_id                             = (known after apply)
+
+      + health_check {
+          + enabled             = true
+          + healthy_threshold   = 3
+          + interval            = 30
+          + matcher             = (known after apply)
+          + path                = "/test1/"
+          + port                = "80"
+          + protocol            = "HTTP"
+          + timeout             = (known after apply)
+          + unhealthy_threshold = 3
+        }
+
+      + stickiness {
+          + cookie_duration = (known after apply)
+          + cookie_name     = (known after apply)
+          + enabled         = (known after apply)
+          + type            = (known after apply)
+        }
+    }
+
+  # module.vpc.aws_security_group.ecs_tasks will be created
+  + resource "aws_security_group" "ecs_tasks" {
+      + arn                    = (known after apply)
+      + description            = "security group for ecs tasks"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "10.0.0.0/16",
+                ]
+              + description      = ""
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 8080
+            },
+          + {
+              + cidr_blocks      = []
+              + description      = ""
+              + from_port        = 8000
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 9000
+            },
+        ]
+      + name                   = "ecs-task-sg-alb-apigw"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = (known after apply)
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_security_group.lb will be created
+  + resource "aws_security_group" "lb" {
+      + arn                    = (known after apply)
+      + description            = "NLB security group"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 8080
+            },
+        ]
+      + name                   = "nlb-sg-alb-apigw"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = (known after apply)
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private_subnet[0] will be created
+  + resource "aws_subnet" "private_subnet" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "ap-southeast-2a"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.0.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "private-subnet-alb-apigw"
+          + "Terraform" = "True"
+        }
+      + tags_all                        = {
+          + "Name"      = "private-subnet-alb-apigw"
+          + "Terraform" = "True"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private_subnet[1] will be created
+  + resource "aws_subnet" "private_subnet" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "ap-southeast-2b"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.4.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name"      = "private-subnet-alb-apigw"
+          + "Terraform" = "True"
+        }
+      + tags_all                        = {
+          + "Name"      = "private-subnet-alb-apigw"
+          + "Terraform" = "True"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # module.vpc.aws_vpc.custom_vpc will be created
+  + resource "aws_vpc" "custom_vpc" {
+      + arn                            = (known after apply)
+      + cidr_block                     = "10.0.0.0/16"
+      + default_network_acl_id         = (known after apply)
+      + default_route_table_id         = (known after apply)
+      + default_security_group_id      = (known after apply)
+      + dhcp_options_id                = (known after apply)
+      + enable_classiclink             = (known after apply)
+      + enable_classiclink_dns_support = (known after apply)
+      + enable_dns_hostnames           = true
+      + enable_dns_support             = true
+      + id                             = (known after apply)
+      + instance_tenancy               = "default"
+      + ipv6_association_id            = (known after apply)
+      + ipv6_cidr_block                = (known after apply)
+      + main_route_table_id            = (known after apply)
+      + owner_id                       = (known after apply)
+      + tags                           = {
+          + "Name"      = "vpc for alb-apigw demo-alb-apigw"
+          + "Terraform" = "True"
+        }
+      + tags_all                       = {
+          + "Name"      = "vpc for alb-apigw demo-alb-apigw"
+          + "Terraform" = "True"
+        }
+    }
+
+  # module.vpc.aws_vpc_endpoint.cloudwatch will be created
+  + resource "aws_vpc_endpoint" "cloudwatch" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-southeast-2.logs"
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "CloudWatch VPC Endpoint Interface - alb-apigw"
+        }
+      + tags_all              = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "CloudWatch VPC Endpoint Interface - alb-apigw"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.ecr_api will be created
+  + resource "aws_vpc_endpoint" "ecr_api" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-southeast-2.ecr.api"
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "ECR Docker VPC Endpoint Interface - alb-apigw"
+        }
+      + tags_all              = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "ECR Docker VPC Endpoint Interface - alb-apigw"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.ecr_dkr will be created
+  + resource "aws_vpc_endpoint" "ecr_dkr" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-southeast-2.ecr.dkr"
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "ECR Docker VPC Endpoint Interface - alb-apigw"
+        }
+      + tags_all              = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "ECR Docker VPC Endpoint Interface - alb-apigw"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.s3 will be created
+  + resource "aws_vpc_endpoint" "s3" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = false
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-southeast-2.s3"
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "S3 VPC Endpoint Gateway - alb-apigw"
+        }
+      + tags_all              = {
+          + "Environment" = "alb-apigw"
+          + "Name"        = "S3 VPC Endpoint Gateway - alb-apigw"
+        }
+      + vpc_endpoint_type     = "Gateway"
+      + vpc_id                = (known after apply)
+    }
+
+Plan: 41 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+module.vpc.aws_vpc.custom_vpc: Creating...
+module.ecs_microservice.aws_iam_role.task_role: Creating...
+module.api_gateway.aws_acm_certificate.myapp: Creating...
+module.ecs_microservice.aws_cloudwatch_log_group.cw_log_group: Creating...
+module.ecs_cluster.aws_ecs_cluster.main: Creating...
+module.api_gateway.aws_apigatewayv2_api.main: Creating...
+module.ecs_microservice.aws_iam_role.main_ecs_tasks: Creating...
+module.ecr.aws_ecr_repository.repo: Creating...
+module.api_gateway.aws_cloudwatch_log_group.main: Creating...
+module.api_gateway.aws_cloudwatch_log_group.main: Creation complete after 0s [id=apigateway-apigw-logs]
+module.ecr.aws_ecr_repository.repo: Creation complete after 0s [id=test]
+module.ecr.null_resource.push: Creating...
+module.ecr.null_resource.push: Provisioning with 'local-exec'...
+module.ecr.null_resource.push (local-exec): Executing: ["bash" "-c" "ecr/push.sh /home/ec2-user/aws-http-api-private-alb/infrastructure/modules/ecr 996104769930.dkr.ecr.ap-southeast-2.amazonaws.com/test latest"]
+module.ecs_microservice.aws_cloudwatch_log_group.cw_log_group: Creation complete after 0s [id=/ecs/carsales1-alb-apigw]
+module.ecr.aws_ecr_lifecycle_policy.repo-policy: Creating...
+module.ecs_microservice.aws_cloudwatch_log_stream.cw_log_stream: Creating...
+module.ecr.aws_ecr_lifecycle_policy.repo-policy: Creation complete after 0s [id=test]
+module.ecs_microservice.aws_cloudwatch_log_stream.cw_log_stream: Creation complete after 0s [id=carsales1-alb-apigw]
+module.ecr.null_resource.push (local-exec): Sending build context to Docker daemon  15.87kB
+module.ecr.null_resource.push (local-exec): Step 1/7 : FROM node:16
+module.ecr.null_resource.push (local-exec):  ---> affe728e127a
+module.ecr.null_resource.push (local-exec): Step 2/7 : WORKDIR /usr/src/app
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> 8a1697925f8c
+module.ecr.null_resource.push (local-exec): Step 3/7 : COPY package*.json ./
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> b9131f9d47f8
+module.ecr.null_resource.push (local-exec): Step 4/7 : RUN npm install
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> 4449442fecfe
+module.ecr.null_resource.push (local-exec): Step 5/7 : COPY . .
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> 66159688ab4a
+module.ecr.null_resource.push (local-exec): Step 6/7 : EXPOSE 80
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> e53c65f9249a
+module.ecr.null_resource.push (local-exec): Step 7/7 : CMD [ "node", "server.js" ]
+module.ecr.null_resource.push (local-exec):  ---> Using cache
+module.ecr.null_resource.push (local-exec):  ---> 55ac3a6e1abe
+module.ecr.null_resource.push (local-exec): Successfully built 55ac3a6e1abe
+module.ecr.null_resource.push (local-exec): Successfully tagged test:latest
+module.ecr.null_resource.push (local-exec): begin docker login
+module.api_gateway.aws_apigatewayv2_api.main: Creation complete after 0s [id=4pq90zssx1]
+module.api_gateway.aws_apigatewayv2_stage.main: Creating...
+module.api_gateway.aws_apigatewayv2_stage.main: Creation complete after 1s [id=$default]
+module.ecr.null_resource.push (local-exec): WARNING! Your password will be stored unencrypted in /home/ec2-user/.docker/config.json.
+module.ecr.null_resource.push (local-exec): Configure a credential helper to remove this warning. See
+module.ecr.null_resource.push (local-exec): https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+module.ecr.null_resource.push (local-exec): Login Succeeded
+module.ecr.null_resource.push (local-exec): The push refers to repository [996104769930.dkr.ecr.ap-southeast-2.amazonaws.com/test]
+module.ecr.null_resource.push (local-exec): 09a724bbbc30: Preparing
+module.ecr.null_resource.push (local-exec): db9068bbc125: Preparing
+module.ecr.null_resource.push (local-exec): 50922f499260: Preparing
+module.ecr.null_resource.push (local-exec): 5f2e14329393: Preparing
+module.ecr.null_resource.push (local-exec): cb5c6f01afdd: Preparing
+module.ecr.null_resource.push (local-exec): 9373ec48ed1c: Preparing
+module.ecr.null_resource.push (local-exec): b70feedd9946: Preparing
+module.ecr.null_resource.push (local-exec): a1190e978df5: Preparing
+module.ecr.null_resource.push (local-exec): 227e0c39f037: Preparing
+module.ecr.null_resource.push (local-exec): 66b1d61820c3: Preparing
+module.ecr.null_resource.push (local-exec): 92903c3857f8: Preparing
+module.ecr.null_resource.push (local-exec): 9ad2165feb02: Preparing
+module.ecr.null_resource.push (local-exec): 2c7e7ab2260a: Preparing
+module.ecr.null_resource.push (local-exec): 9373ec48ed1c: Waiting
+module.ecr.null_resource.push (local-exec): b70feedd9946: Waiting
+module.ecr.null_resource.push (local-exec): a1190e978df5: Waiting
+module.ecr.null_resource.push (local-exec): 227e0c39f037: Waiting
+module.ecr.null_resource.push (local-exec): 66b1d61820c3: Waiting
+module.ecr.null_resource.push (local-exec): 92903c3857f8: Waiting
+module.ecr.null_resource.push (local-exec): 9ad2165feb02: Waiting
+module.ecr.null_resource.push (local-exec): 2c7e7ab2260a: Waiting
+module.ecr.null_resource.push (local-exec): 5f2e14329393: Pushed
+module.ecr.null_resource.push (local-exec): 50922f499260: Pushed
+module.ecr.null_resource.push (local-exec): cb5c6f01afdd: Pushed
+module.ecr.null_resource.push (local-exec): 09a724bbbc30: Pushed
+module.ecs_microservice.aws_iam_role.main_ecs_tasks: Creation complete after 3s [id=main_ecs_tasks-carsales1-role]
+module.ecs_microservice.aws_iam_role_policy.main_ecs_tasks: Creating...
+module.ecs_microservice.aws_iam_role.task_role: Creation complete after 4s [id=ecs_tasks-carsales1-role]
+module.ecs_microservice.aws_ecs_task_definition.app: Creating...
+module.ecs_microservice.aws_ecs_task_definition.app: Creation complete after 0s [id=carsales1-alb-apigw]
+module.ecs_microservice.data.aws_ecs_task_definition.app: Reading...
+module.ecs_microservice.data.aws_ecs_task_definition.app: Read complete after 0s [id=arn:aws:ecs:ap-southeast-2:996104769930:task-definition/carsales1-alb-apigw:15]
+module.api_gateway.aws_acm_certificate.myapp: Provisioning with 'local-exec'...
+module.api_gateway.aws_acm_certificate.myapp (local-exec): Executing: ["/bin/sh" "-c" "sleep 120;"]
+module.ecs_microservice.aws_iam_role_policy.main_ecs_tasks: Creation complete after 2s [id=main_ecs_tasks-carsales1-role:main_ecs_tasks-carsales1-policy]
+module.ecr.null_resource.push (local-exec): a1190e978df5: Pushed
+module.ecr.null_resource.push (local-exec): db9068bbc125: Pushed
+module.ecr.null_resource.push (local-exec): 9373ec48ed1c: Pushed
+module.vpc.aws_vpc.custom_vpc: Still creating... [10s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [10s elapsed]
+module.ecs_cluster.aws_ecs_cluster.main: Still creating... [10s elapsed]
+module.ecr.null_resource.push: Still creating... [10s elapsed]
+module.ecs_cluster.aws_ecs_cluster.main: Creation complete after 10s [id=arn:aws:ecs:ap-southeast-2:996104769930:cluster/helloworld-alb-apigw]
+module.vpc.aws_vpc.custom_vpc: Creation complete after 11s [id=vpc-061c13258f89e778b]
+module.vpc.aws_security_group.lb: Creating...
+module.vpc.aws_subnet.private_subnet[0]: Creating...
+module.vpc.aws_subnet.private_subnet[1]: Creating...
+module.ecs_microservice.aws_lb_target_group.alb_tg: Creating...
+module.vpc.aws_vpc_endpoint.s3: Creating...
+module.ecs_microservice.aws_lb_target_group.alb_tg: Creation complete after 0s [id=arn:aws:elasticloadbalancing:ap-southeast-2:996104769930:targetgroup/carsales1-tg/396229e24b808fc0]
+module.vpc.aws_subnet.private_subnet[0]: Creation complete after 1s [id=subnet-0c0bcfdbd12ff2376]
+module.vpc.aws_subnet.private_subnet[1]: Creation complete after 1s [id=subnet-08ff6f258e07221a6]
+module.vpc.aws_security_group.lb: Creation complete after 1s [id=sg-029a9afcad009284f]
+module.ecs_alb.aws_lb.alb: Creating...
+module.vpc.aws_security_group.ecs_tasks: Creating...
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Creating...
+module.ecs_microservice.aws_ecs_service.main: Creating...
+module.vpc.aws_security_group.ecs_tasks: Creation complete after 1s [id=sg-0c80e943ee32b2da5]
+module.vpc.aws_vpc_endpoint.ecr_api: Creating...
+module.vpc.aws_vpc_endpoint.cloudwatch: Creating...
+module.vpc.aws_vpc_endpoint.ecr_dkr: Creating...
+module.vpc.aws_vpc_endpoint.s3: Creation complete after 5s [id=vpce-02f88411331c14632]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [20s elapsed]
+module.ecr.null_resource.push: Still creating... [20s elapsed]
+module.ecr.null_resource.push (local-exec): 92903c3857f8: Pushed
+module.ecr.null_resource.push (local-exec): b70feedd9946: Pushed
+module.ecr.null_resource.push (local-exec): 9ad2165feb02: Pushed
+module.ecs_alb.aws_lb.alb: Still creating... [10s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [10s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [10s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [10s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [10s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [10s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [30s elapsed]
+module.ecr.null_resource.push: Still creating... [30s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [20s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [20s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [20s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [20s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [20s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [20s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [40s elapsed]
+module.ecr.null_resource.push: Still creating... [40s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [30s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [30s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [30s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [30s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [30s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [30s elapsed]
+module.ecr.null_resource.push (local-exec): 66b1d61820c3: Pushed
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [50s elapsed]
+module.ecr.null_resource.push: Still creating... [50s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [40s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [40s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [40s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [40s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [40s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [40s elapsed]
+module.ecr.null_resource.push (local-exec): 2c7e7ab2260a: Pushed
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m0s elapsed]
+module.ecr.null_resource.push: Still creating... [1m0s elapsed]
+module.ecr.null_resource.push (local-exec): 227e0c39f037: Pushed
+module.ecs_alb.aws_lb.alb: Still creating... [50s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [50s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [50s elapsed]
+module.ecr.null_resource.push (local-exec): latest: digest: sha256:d87362d932723a7bc8d02005b3388b8e67da970e05607ca724cd80999836cbb5 size: 3047
+module.ecr.null_resource.push: Creation complete after 1m3s [id=1147593418329344825]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [50s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [50s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [50s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m10s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m0s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m0s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m0s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m0s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m0s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m0s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m20s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m10s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m10s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m10s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m10s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m10s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m10s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m30s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m20s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m20s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m20s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m20s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m20s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m20s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m40s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m30s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m30s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m30s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m30s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m30s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m30s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [1m50s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m40s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m40s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m40s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m40s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m40s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m40s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Still creating... [2m0s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [1m50s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [1m50s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [1m50s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_api: Still creating... [1m50s elapsed]
+module.vpc.aws_vpc_endpoint.cloudwatch: Still creating... [1m50s elapsed]
+module.vpc.aws_vpc_endpoint.ecr_dkr: Still creating... [1m50s elapsed]
+module.api_gateway.aws_acm_certificate.myapp: Creation complete after 2m4s [id=arn:aws:acm:ap-southeast-2:996104769930:certificate/f18ad614-79b6-4f73-9917-990132e33bfd]
+module.api_gateway.aws_route53_record.cert_validation: Creating...
+module.vpc.aws_vpc_endpoint.ecr_dkr: Creation complete after 1m52s [id=vpce-0e2401df693ed27eb]
+module.vpc.aws_vpc_endpoint.ecr_api: Creation complete after 1m52s [id=vpce-0cbd5b7253da6ca92]
+module.vpc.aws_vpc_endpoint.cloudwatch: Creation complete after 1m52s [id=vpce-0d3fc4d400d1667b6]
+module.ecs_alb.aws_lb.alb: Still creating... [2m0s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [2m0s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [2m0s elapsed]
+module.api_gateway.aws_route53_record.cert_validation: Still creating... [10s elapsed]
+module.ecs_alb.aws_lb.alb: Still creating... [2m10s elapsed]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [2m10s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Still creating... [2m10s elapsed]
+module.ecs_alb.aws_lb.alb: Creation complete after 2m12s [id=arn:aws:elasticloadbalancing:ap-southeast-2:996104769930:loadbalancer/app/alb-alb-apigw-alb-apigw/830a41a684d31525]
+module.ecs_alb.aws_lb_listener.alb_listener: Creating...
+module.ecs_alb.aws_lb_listener.alb_listener: Creation complete after 0s [id=arn:aws:elasticloadbalancing:ap-southeast-2:996104769930:listener/app/alb-alb-apigw-alb-apigw/830a41a684d31525/0a17705ccd3064e8]
+module.ecs_microservice.aws_lb_listener_rule.static: Creating...
+module.ecs_microservice.aws_lb_listener_rule.static: Creation complete after 0s [id=arn:aws:elasticloadbalancing:ap-southeast-2:996104769930:listener-rule/app/alb-alb-apigw-alb-apigw/830a41a684d31525/0a17705ccd3064e8/4fcc20023e21bd5f]
+module.api_gateway.aws_route53_record.cert_validation: Still creating... [20s elapsed]
+module.ecs_microservice.aws_ecs_service.main: Creation complete after 2m19s [id=arn:aws:ecs:ap-southeast-2:996104769930:service/helloworld-alb-apigw/carsales1-alb-apigw]
+module.ecs_microservice.aws_appautoscaling_target.target: Creating...
+module.ecs_microservice.aws_appautoscaling_target.target: Creation complete after 0s [id=service/helloworld-alb-apigw/carsales1-alb-apigw]
+module.ecs_microservice.aws_appautoscaling_policy.up: Creating...
+module.ecs_microservice.aws_appautoscaling_policy.down: Creating...
+module.ecs_microservice.aws_appautoscaling_policy.up: Creation complete after 0s [id=cw_scale_up-carsales1-alb-apigw]
+module.ecs_microservice.aws_appautoscaling_policy.down: Creation complete after 0s [id=cb_scale_down-carsales1-alb-apigw]
+module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_high: Creating...
+module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_low: Creating...
+module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_low: Creation complete after 1s [id=cb_cpu_utilization_low-carsales1-alb-apigw]
+module.ecs_microservice.aws_cloudwatch_metric_alarm.service_cpu_high: Creation complete after 1s [id=cw_cpu_utilization_high-carsales1-alb-apigw]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Still creating... [2m20s elapsed]
+module.api_gateway.aws_route53_record.cert_validation: Still creating... [30s elapsed]
+module.api_gateway.aws_route53_record.cert_validation: Creation complete after 32s [id=Z01584572MIJQ3CR4KP1B__153597c40aff935f0685b10f9b9081cc.api.poc.csnglobal.net._CNAME]
+module.api_gateway.aws_acm_certificate_validation.cert: Creating...
+module.api_gateway.aws_acm_certificate_validation.cert: Provisioning with 'local-exec'...
+module.api_gateway.aws_acm_certificate_validation.cert (local-exec): Executing: ["/bin/sh" "-c" "sleep 120;"]
+module.api_gateway.aws_apigatewayv2_vpc_link.main: Creation complete after 2m26s [id=uj49f2]
+module.api_gateway.aws_apigatewayv2_integration.main: Creating...
+module.api_gateway.aws_apigatewayv2_integration.main: Creation complete after 1s [id=hmubxrc]
+module.api_gateway.aws_apigatewayv2_route.main: Creating...
+module.api_gateway.aws_apigatewayv2_route.main: Creation complete after 0s [id=8ruk63p]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [10s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [20s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [30s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [40s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [50s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m0s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m10s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m20s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m30s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m40s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [1m50s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Still creating... [2m0s elapsed]
+module.api_gateway.aws_acm_certificate_validation.cert: Creation complete after 2m1s [id=2021-12-22 08:37:11 +0000 UTC]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Creating...
+module.api_gateway.aws_apigatewayv2_domain_name.main: Provisioning with 'local-exec'...
+module.api_gateway.aws_apigatewayv2_domain_name.main (local-exec): Executing: ["/bin/sh" "-c" "sleep 120;"]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [10s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [20s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [30s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [40s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [50s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m0s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m10s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m20s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m30s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m40s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [1m50s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Still creating... [2m0s elapsed]
+module.api_gateway.aws_apigatewayv2_domain_name.main: Creation complete after 2m3s [id=api.poc.csnglobal.net]
+module.api_gateway.aws_apigatewayv2_api_mapping.main: Creating...
+module.api_gateway.aws_route53_record.main: Creating...
+module.api_gateway.aws_apigatewayv2_api_mapping.main: Creation complete after 1s [id=v2ny3u]
+module.api_gateway.aws_route53_record.main: Still creating... [10s elapsed]
+module.api_gateway.aws_route53_record.main: Still creating... [20s elapsed]
+module.api_gateway.aws_route53_record.main: Still creating... [30s elapsed]
+module.api_gateway.aws_route53_record.main: Still creating... [40s elapsed]
+module.api_gateway.aws_route53_record.main: Creation complete after 46s [id=Z01584572MIJQ3CR4KP1B_api.poc.csnglobal.net_CNAME]
