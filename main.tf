@@ -70,6 +70,12 @@ route53_domain = "poc.csnglobal.net"
 #client_id = module.cognito.client_id
 }
 
+module cloudfront {
+source = "./cloudfront"
+api_endpoint = module.api_gateway.api_endpoint
+}
+    
+    
 module ecs_microservice {
 source = "./ecs_microservice"
 alb_listner_arn = module.ecs_alb.alb_lister_arn
